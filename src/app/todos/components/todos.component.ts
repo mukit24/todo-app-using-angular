@@ -5,8 +5,6 @@ import { TodosService } from '../services/todos.service';
 import { TodosDto } from '../models/todos-dto';
 import { MessageService } from 'primeng/api';
 
-
-
 @Component({
   selector: 'app-todos',
   templateUrl: './todos.component.html',
@@ -71,7 +69,12 @@ export class TodosComponent implements OnInit {
           this.completeTodos = response;
           // console.log(this.completeTodos);
         }, error: error => {
-          console.log(error)
+          this.message.add({
+            severity: 'error',
+            summary: error.name,
+            detail: error.message,
+            sticky: true
+        });
         }
       })
   }
