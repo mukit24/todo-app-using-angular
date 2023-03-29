@@ -4,11 +4,13 @@ import { RxwebValidators } from '@rxweb/reactive-form-validators';
 import { TodosService } from '../services/todos.service';
 import { TodosDto } from '../models/todos-dto';
 import { MessageService } from 'primeng/api';
+import { Store, select } from '@ngrx/store';
+import { todoState } from '../store/todos.reducer';
+import { loadTodos } from '../store/todos.actions';
 
 @Component({
   selector: 'app-todos',
   templateUrl: './todos.component.html',
-  styleUrls: ['./todos.component.css']
 })
 
 export class TodosComponent implements OnInit {
@@ -17,39 +19,61 @@ export class TodosComponent implements OnInit {
   completeTodos: TodosDto[];
   incompleteTodos: TodosDto[];
   display: boolean;
-  updateTodo : TodosDto;
-  
-  constructor(private fb: FormBuilder, private service: TodosService, private message : MessageService) { }
+  updateTodo: TodosDto;
+  todos : TodosDto[];
+  // test = this.store.select(state => state.todos.todos).subscribe((res) => this.todos = res);
+  // yooo = this.store.select(state => state.todos.loading);
+  // test = this.yooo.subscribe((res) => console.log(res));
+  // loading$ = this.store.select(state => state.todos.loading);
+  // todos$ = this.store.select(state => state.todos.todos);
+  // count$ = this.store.pipe(select('todos'));
+  // this.store.select(state => state.todos.todos).subscribe(data => {
+  //   this.isUserFirstLogin = data;
+  // });
 
+  constructor(private fb: FormBuilder, private service: TodosService, private message: MessageService, private store: Store<{ todos: todoState }>) { 
+    // this.store.select(state => state.todos.todos).subscribe((res) => this.todos = res);
+    // console.log(this.todos);
+    // this.todos$.subscribe(res => this.todos = res);
+    // console.log(this.todos);
+  }
+  
   showSuccessCreated() {
     this.message.add({ severity: 'success', summary: 'Created', detail: 'Successfully created Todo' });
   }
 
-  showSuccessUpdate(){
+  showSuccessUpdate() {
     this.message.add({ severity: 'success', summary: 'Updated', detail: 'Successfully updated Todo' });
   }
 
-  showSuccessDelete(){
+  showSuccessDelete() {
     this.message.add({ severity: 'success', summary: 'Deleted', detail: 'Successfully deleted Todo' });
   }
-
+  
   ngOnInit(): void {
+    this.store.dispatch(loadTodos());
+    this.store.select(state => state.todos.todos).subscribe((res) => this.todos = res);
+    console.log(this.todos);
+    // this.store.select(state => state.todos.todos).subscribe((res) => {
+    //   if (res){
+    //     this.todos = res;
+    //     console.log(this.todos);
+    //   }
+    // });
+    
     // form validation
-
     this.modalForm = this.fb.group({
       taskNameUpdate: ['', RxwebValidators.required()]
     })
-    
+
     this.myForm = this.fb.group({
       taskName: ['', RxwebValidators.required({ 'message': 'Task Name Can Not Be Blank' })]
     })
-
 
     // get incomplete task
     this.service.getIncompleteTodos()
       .subscribe({
         next: (response: any) => {
-          // console.log(response);
           this.incompleteTodos = response;
         }, error: error => {
           this.message.add({
@@ -57,7 +81,7 @@ export class TodosComponent implements OnInit {
             summary: error.name,
             detail: error.message,
             sticky: true
-        });
+          });
         }
       })
 
@@ -74,11 +98,14 @@ export class TodosComponent implements OnInit {
             summary: error.name,
             detail: error.message,
             sticky: true
-        });
+          });
         }
       })
   }
-
+  // getTodos () {
+  //   this.store.select( state => state.todos.todos).subscribe(res => this.todos = res);
+  //   console.log(this.todos);
+  // }
   // getter 
   get taskName() {
     return this.myForm.controls['taskName'];
@@ -125,19 +152,19 @@ export class TodosComponent implements OnInit {
         }
       })
   }
-  showModalDialog(todo : any) {
+  showModalDialog(todo: any) {
     this.updateTodo = todo;
     console.log(this.completeTodos.indexOf(this.updateTodo));
     this.display = true;
     this.modalForm.controls['taskNameUpdate'].setValue(todo.title);
-}
+  }
 
-onUpdate() {
+  onUpdate() {
     // console.log(this.completeTodos.indexOf(todo));
     this.updateTodo.title = this.modalForm.value.taskNameUpdate;
     this.display = false;
     this.service.updateTodo(this.updateTodo)
-      .subscribe((response : any)=>{
+      .subscribe((response: any) => {
         this.showSuccessUpdate();
         if (this.updateTodo.completed === true) {
           let index = this.completeTodos.indexOf(this.updateTodo);

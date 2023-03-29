@@ -8,6 +8,10 @@ export class TodosService {
 
   constructor( private http : HttpClient) { }
 
+  getAllTodos () {
+    return this.http.get(this.url);
+  }
+
   getIncompleteTodos () {
     return this.http.get(this.url+'?completed=false');
   }

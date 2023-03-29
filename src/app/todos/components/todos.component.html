@@ -12,7 +12,7 @@
             <button pButton label="Submit" [disabled]="!myForm.valid"
                 class="p-button-sm p-button-success my-1 w-100"></button>
         </form>
-
+        <!-- <h2>{{loading$ | async}}</h2> -->
         <p-dialog header="Update Todo" [(visible)]="display" [style]="{width: '30vw'}">
             <form [formGroup]="modalForm" (submit)="onUpdate()">
                 <div class="field">
