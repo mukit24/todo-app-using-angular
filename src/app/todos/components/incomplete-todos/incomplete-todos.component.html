@@ -1,0 +1,24 @@
+<p-table [value]="incompleteTodos" [paginator]="true" [rows]="5" [showCurrentPageReport]="false"
+    [rowsPerPageOptions]="[5,10,20]">
+    <ng-template pTemplate="header">
+        <tr>
+            <th></th>
+            <th>Task Name</th>
+            <th>Operation</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-todo>
+        <tr>
+            <td>
+                <div class="field-checkbox d-flex">
+                    <p-checkbox [binary]="true" inputId="binary" (onChange)="markAsComplete(todo)"></p-checkbox>
+                    <label for="binary" class="ms-1 fw-bold text-success">Complete</label>
+                </div>
+            </td>
+            <td>{{todo.title}}</td>
+            <td>
+                <app-edit-delete-todos [todo]="todo" [incompleteTodos]="incompleteTodos" [completeTodos]="completeTodos"></app-edit-delete-todos>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

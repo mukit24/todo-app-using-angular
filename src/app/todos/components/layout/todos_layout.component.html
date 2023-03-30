@@ -1,0 +1,23 @@
+<p-toast></p-toast>
+<div class="row g-3">
+    <div class="col-6">
+        <form [formGroup]="myForm" (submit)="onSubmit()">
+            <div class="field">
+                <label for="taskName" class="block h5 text-success">Write a Todo</label>
+                <input id="taskName" type="text" aria-describedby="taskName-help" class="w-100"
+                    formControlName="taskName" pInputText />
+                <small class="form-text text-danger"
+                    *ngIf="taskName.errors && taskName.touched">{{taskName.errors['required'].message}}<br /></small>
+            </div>
+            <button pButton label="Submit" [disabled]="!myForm.valid"
+                class="p-button-sm p-button-success my-1 w-100"></button>
+        </form>
+
+        <h4 class="text-center mt-2 mb-0 alert alert-danger">Incomplete Tasks</h4>
+        <app-incomplete-todos [incompleteTodos]="incompleteTodos" [completeTodos]="completeTodos"></app-incomplete-todos>
+    </div>
+    <div class="col-6">
+        <h4 class="text-center mt-2 mb-0 alert alert-success">Complete Tasks</h4>
+        <app-complete-todos [incompleteTodos]="incompleteTodos" [completeTodos]="completeTodos"></app-complete-todos>
+    </div>
+</div>

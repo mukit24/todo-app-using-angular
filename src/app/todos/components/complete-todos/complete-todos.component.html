@@ -1,0 +1,17 @@
+<p-table [value]="completeTodos" [paginator]="true" [rows]="5" [showCurrentPageReport]="false"
+    [rowsPerPageOptions]="[5,10,20]">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Task Name</th>
+            <th>Operation</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-todo>
+        <tr>
+            <td>{{todo.title}}</td>
+            <td>
+                <app-edit-delete-todos [todo]="todo" [incompleteTodos]="incompleteTodos" [completeTodos]="completeTodos"></app-edit-delete-todos>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

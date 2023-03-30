@@ -1,0 +1,17 @@
+<div class="d-flex">
+    <button pButton pRipple type="button" (click)="onDelete(todo)" icon="pi pi-trash"
+        class="p-button-danger p-button-text"></button>
+    <button pButton pRipple type="button" (click)="showModalDialog(todo)" icon="pi pi-pencil"
+        class="p-button-info p-button-text"></button>
+</div>
+
+<p-dialog header="Update Todo" [(visible)]="display" [style]="{width: '30vw'}">
+    <form [formGroup]="modalForm" (submit)="onUpdate()">
+        <div class="field">
+            <input id="taskNameUpdate" type="text" aria-describedby="taskNameUpdate-help" class="w-100"
+                formControlName="taskNameUpdate" pInputText />
+        </div>
+        <button pButton label="Update" [disabled]="!modalForm.valid"
+            class="p-button-sm p-button-primary my-1 w-100"></button>
+    </form>
+</p-dialog>
