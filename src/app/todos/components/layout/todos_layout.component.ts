@@ -4,10 +4,9 @@ import { RxwebValidators } from '@rxweb/reactive-form-validators';
 import { TodosService } from '../../services/todos.service';
 import { TodosDto } from '../../models/todos-dto';
 import { MessageService } from 'primeng/api';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { todoState } from '../../store/todos.reducer';
 import { loadTodos } from '../../store/todos.actions';
-import { Observable } from 'rxjs';
 import { getTodos } from '../../store/todos.selector';
 
 @Component({
@@ -19,7 +18,6 @@ export class TodosComponent implements OnInit {
   myForm: FormGroup;
   completeTodos: TodosDto[];
   incompleteTodos: TodosDto[];
-  // todos: Observable<TodosDto[]> = this.store.select(getTodos);
 
 
   constructor(private fb: FormBuilder, private service: TodosService, private message: MessageService, private store: Store<{ todos: todoState }>) { }
@@ -33,41 +31,10 @@ export class TodosComponent implements OnInit {
     this.store.dispatch(loadTodos());
 
     this.store.select(getTodos).subscribe(res => {
-      let newData = [...res];
-      debugger
-      this.incompleteTodos = newData.filter(todo => todo.completed === false);
-      this.completeTodos = newData.filter(todo => todo.completed === true);
+      let todos : TodosDto[] = JSON.parse(JSON.stringify(res));
+      this.incompleteTodos = todos.filter(todo => todo.completed === false);
+      this.completeTodos = todos.filter(todo => todo.completed === true);
     });
-
-    // this.service.getIncompleteTodos()
-    //   .subscribe({
-    //     next: (response: any) => {
-    //       this.incompleteTodos = response;
-    //     }, error: error => {
-    //       this.message.add({
-    //         severity: 'error',
-    //         summary: error.name,
-    //         detail: error.message,
-    //         sticky: true
-    //       });
-    //     }
-    //   })
-
-    // this.service.getCompleteTodos()
-    //   .subscribe({
-    //     next: (response: any) => {
-    //       // console.log(response);
-    //       this.completeTodos = response;
-    //       // console.log(this.completeTodos);
-    //     }, error: error => {
-    //       this.message.add({
-    //         severity: 'error',
-    //         summary: error.name,
-    //         detail: error.message,
-    //         sticky: true
-    //       });
-    //     }
-    //   })
 
     // form validation
     this.myForm = this.fb.group({
